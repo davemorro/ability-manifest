@@ -1,0 +1,47 @@
+{
+  "name": "atom-manifest",
+  "main": "./lib/atom-manifest",
+  "version": "1.0.0",
+  "description": "Leverage a manifest in your Ability specifications",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davemorro/atom-manifest.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {
+    "js-yaml": "^3.5.4"
+  },
+  "consumedServices": {
+    "inline-messaging": {
+      "versions": {
+        "^1.0.0": "consumeInlineMessenger"
+      }
+    },
+    "status-bar": {
+      "versions": {
+        "^1.0.0": "consumeStatusBar"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/davemorro/atom-manifest/issues"
+  },
+  "homepage": "https://github.com/davemorro/atom-manifest#readme",
+  "_id": "atom-manifest@1.0.0",
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [],
+    "extensions": {
+      ".coffee": [
+        "lib/atom-manifest.coffee"
+      ],
+      ".json": [
+        "package.json"
+      ]
+    },
+    "folders": []
+  }
+}
