@@ -1,18 +1,19 @@
 {
-  "name": "atom-manifest",
-  "main": "./lib/atom-manifest",
+  "name": "ability-manifest",
+  "main": "./lib/ability-manifest",
   "version": "1.0.0",
   "description": "Leverage a manifest in your Ability specifications",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davemorro/atom-manifest.git"
+    "url": "git+https://github.com/davemorro/ability-manifest.git"
   },
   "license": "MIT",
   "engines": {
     "atom": ">=0.174.0 <2.0.0"
   },
   "dependencies": {
-    "js-yaml": "^3.5.4"
+    "js-yaml": "^3.5.4",
+    "lodash": "^3.10.1"
   },
   "consumedServices": {
     "inline-messaging": {
@@ -27,16 +28,16 @@
     }
   },
   "bugs": {
-    "url": "https://github.com/davemorro/atom-manifest/issues"
+    "url": "https://github.com/davemorro/ability-manifest/issues"
   },
-  "homepage": "https://github.com/davemorro/atom-manifest#readme",
-  "_id": "atom-manifest@1.0.0",
+  "homepage": "https://github.com/davemorro/ability-manifest#readme",
+  "_id": "ability-manifest@1.0.0",
   "_atomModuleCache": {
     "version": 1,
     "dependencies": [],
     "extensions": {
       ".coffee": [
-        "lib/atom-manifest.coffee"
+        "lib/ability-manifest.coffee"
       ],
       ".json": [
         "package.json"
