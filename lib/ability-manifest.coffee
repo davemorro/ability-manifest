@@ -17,6 +17,12 @@ module.exports =
             type: 'string'
             default: 'manifest.yaml'
             order: 2
+        locale:
+            title: 'Location of locale file'
+            description: 'Include filename and path if not in your project root'
+            type: 'string'
+            default: '_locales/en.yaml'
+            order: 3
     activate: (state) ->
         {extensions} = atom.config.get('ability-manifest')
         extensions = (extensions || []).map (extension) -> extension.toLowerCase()

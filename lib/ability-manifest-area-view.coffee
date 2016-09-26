@@ -15,7 +15,8 @@ class AbilityManifestAreaView
         @views = []
         @messages = []
         @messenger = null
-        @config = null
+        @manifest = null
+        @locale = null
 
         @enable()
         #@listenForTimeoutChange()
@@ -41,10 +42,9 @@ class AbilityManifestAreaView
 
         @editorSubscription = new CompositeDisposable
         @editorSubscription = @getActiveEditor().onDidStopChanging =>
-            console.log("A")
             @setupMessages()
 
-        @loadConfig() if @messenger
+        @loadConfigs() if @messenger
 
     getActiveEditor: ->
         atom.workspace.getActiveTextEditor()
@@ -78,28 +78,39 @@ class AbilityManifestAreaView
 
     setInlineMessenger: (messenger) =>
         @messenger = messenger
-        @loadConfig()
+        @loadConfigs()
 
-    loadConfig: ->
+    loadConfigs: =>
+      @loadManifest()
+      @loadLocale()
+
+    loadManifest: ->
         {manifest} = atom.config.get('ability-manifest')
-        file = path.join(atom.project.getPaths()[0], manifest)
-        self = this
-        fs.stat file, (err, stat) ->
-            if err == null # file exists
-                self.config = yaml.safeLoad(fs.readFileSync(file))
-                self.setupMessages()
-            else
-                return null
-        #
-        # file =
-        # console.log(file)
-        # return unless file
+        @loadConfig(manifest)
+
+    loadLocale: ->
+        {locale} = atom.config.get('ability-manifest')
+        @loadConfig(locale)
+
+    loadConfig: (configPath) ->
+      file = path.join(atom.project.getPaths()[0], configPath)
+      self = this
+      fs.stat file, (err, stat) ->
+          if err == null # file exists
+              # TODO: Update for callback
+              if configPath == 'manifest.yaml'
+                self.manifest = yaml.safeLoad(fs.readFileSync(file))
+              else if configPath == '_locales/en.yaml'
+                self.locale = yaml.safeLoad(fs.readFileSync(file))
+              self.setupMessages()
+          else
+              return null
 
     setupMessages: ->
         editor = @getActiveEditor()
         return unless editor
         return unless @messenger
-        return unless @config
+        return unless @manifest
 
         @messages.map (msg) -> msg.destroy()
         @messages = []
@@ -119,13 +130,51 @@ class AbilityManifestAreaView
             try
                 value = configString.split('.').reduce(((a, b) ->
                     a[b]
-                ), @config)
-                severity = "warning"
+                ), @manifest)
+                severity = "info"
 
                 throw "Not found" unless value
 
             catch err
                 value = "No manifest value found"
+                severity = "error"
+
+            # unless value
+            #     value = "No manifest value found"
+            #     severity = "error"
+
+            if value.constructor == Array
+                if value.length > 20
+                    value = value.slice(0,19)
+                    value.push "..."
+                value = value.join("\n")
+
+            @messages.push @messenger.message
+                range: configRange
+                text: value
+                severity: severity
+
+        regexSearch = 't\\(([^\\)]*)\\)'
+        regexFlags = 'g'
+
+        editor.scanInBufferRange new RegExp(regexSearch, regexFlags), documentRange, (result) =>
+            configString = result.match[1]
+            configRange = result.range
+
+            configRange.start.column += 2
+            configRange.end.column -= 1
+
+            # this isn't particularly elegant
+            try
+                value = configString.split('.').reduce(((a, b) ->
+                    a[b]
+                ), @locale)
+                severity = "info"
+
+                throw "Not found" unless value
+
+            catch err
+                value = "No locale entry found"
                 severity = "error"
 
             # unless value
